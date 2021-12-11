@@ -11,6 +11,9 @@ function MainNavigation() {
             <Link href="/">Login</Link>
           </li>
           <li>
+            <Link href="/home">Home</Link>
+          </li>
+          <li>
             <button>Logout</button>
           </li>
         </ul>
