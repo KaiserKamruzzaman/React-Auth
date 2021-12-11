@@ -1,7 +1,11 @@
 import { useState, useRef } from "react";
 import classes from "./LoginForm.module.css";
+import { useRouter } from "next/router";
+// import { useSelector, useDispatch } from "react-redux";
 
 const LoginForm = () => {
+
+  const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
@@ -28,37 +32,35 @@ const LoginForm = () => {
     }
 
     fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          email: enteredEmail,
-          password: enteredPassword,
-          returnSecureToken: true,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = "Authentication failed...";
+            if (data && data.error && data.error.message) {
+              errorMessage = data.error.message;
+            }
+            throw new Error(errorMessage);
+          });
+        }
       })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return res.json().then((data) => {
-              let errorMessage = "Authentication failed...";
-              if (data && data.error && data.error.message) {
-                errorMessage = data.error.message;
-              }
-              throw new Error(errorMessage);
-            });
-          }
-        })
-        .then((data) => {
-          console.log(data);
-          localStorage.setItem("token", data.idToken);
-        })
-        .catch((error) => alert(error.message));
-
-
-
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("token", data.idToken);
+        router.push('/home');
+      })
+      .catch((error) => alert(error.message));
   };
 
   return (

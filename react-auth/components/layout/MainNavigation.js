@@ -21,7 +21,12 @@ function MainNavigation() {
     }
   }, []);
 
-  console.log(isLoggedIn);
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
+
+  // console.log(isLoggedIn);
 
   return (
     <header className={classes.header}>
@@ -34,18 +39,17 @@ function MainNavigation() {
             </li>
           )}
 
-          { isLoggedIn && 
+          {isLoggedIn && (
             <li>
-            <Link href="/home">Home</Link>
-          </li>
-          }
-          
-          { isLoggedIn &&
+              <Link href="/home">Home</Link>
+            </li>
+          )}
+
+          {isLoggedIn && (
             <li>
-            <button>Logout</button>
-          </li>
-          }
-          
+              <button onClick={logoutHandler}>Logout</button>
+            </li>
+          )}
         </ul>
       </nav>
     </header>
