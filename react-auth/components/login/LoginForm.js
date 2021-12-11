@@ -53,6 +53,7 @@ const LoginForm = () => {
         })
         .then((data) => {
           console.log(data);
+          localStorage.setItem("token", data.idToken);
         })
         .catch((error) => alert(error.message));
 
