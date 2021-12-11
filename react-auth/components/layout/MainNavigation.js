@@ -47,6 +47,12 @@ function MainNavigation() {
 
           {isLoggedIn && (
             <li>
+              <Link href="/profile">Profile</Link>
+            </li>
+          )}
+
+          {isLoggedIn && (
+            <li>
               <button onClick={logoutHandler}>Logout</button>
             </li>
           )}
