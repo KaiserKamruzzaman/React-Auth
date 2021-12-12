@@ -11,10 +11,10 @@ const ProfileForm = () => {
   const [enteredPassword, setEnteredPassword] = useState("");
   const [enteredPasswordIsTouch, setEnteredPasswordIsTouch] = useState(false);
   const enteredPasswordIsValid =
-    enteredPassword.trim() !== "" && enteredPassword.length >= 7;
+    enteredPassword.trim() !== "" && enteredPassword.length >= 6;
   const passwordInputInvalid =
     !enteredPasswordIsValid && enteredPasswordIsTouch;
-  console.log(enteredPasswordIsValid);
+  // console.log(enteredPasswordIsValid);
 
   const passwordInputRef = useRef();
   const authCtx = useContext(AuthContext);
@@ -66,6 +66,9 @@ const ProfileForm = () => {
         alert("password change successfully!!!");
       })
       .catch((error) => alert(error.message));
+
+      setEnteredPassword('');
+      setEnteredPasswordIsTouch(false);
   };
 
   // const passwordInputClasses = passwordInputInvalid ? ''

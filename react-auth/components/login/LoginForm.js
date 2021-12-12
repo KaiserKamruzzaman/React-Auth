@@ -2,9 +2,29 @@ import { useState, useRef, useContext } from "react";
 import classes from "./LoginForm.module.css";
 import { useRouter } from "next/router";
 import AuthContext from "../../store/auth-context";
+//custom hook for validation
+import useInput from "../../hooks/use-input";
 // import { useSelector, useDispatch } from "react-redux";
 
 const LoginForm = () => {
+  const {
+    value: enteredEmail,
+    isValid: enteredEmailIsValid,
+    hasError: emailInputHasError,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    reset: resetEmailInput
+  } = useInput((value) => value.includes("@"));
+
+  const {
+    value: enteredPassword,
+    isValid: enteredPasswordIsValid,
+    hasError: passwordInputHasError,
+    valueChangeHandler: passwordChangeHandler,
+    inputBlurHandler: passwordBlurHandler,
+    reset: resetPasswordInput
+  } = useInput((value) => value.trim() !== "" && value.length >= 6 );
+  // console.log(passwordInputHasError);
 
   const authCtx = useContext(AuthContext);
   const router = useRouter();
@@ -19,10 +39,17 @@ const LoginForm = () => {
   const formSubmitHandler = (event) => {
     event.preventDefault();
 
-    const enteredEmail = emailInputRef.current.value;
-    const enteredPassword = passwordInputRef.current.value;
+    // const enteredEmail = emailInputRef.current.value;
+    // const enteredPassword = passwordInputRef.current.value;
     // console.log(enteredEmail);
     // console.log(enteredPassword);
+    console.log(enteredEmailIsValid);
+    console.log(enteredPasswordIsValid);
+    if(!enteredEmailIsValid || !enteredPasswordIsValid)
+    {
+      return;
+    }
+
     let url;
 
     if (isLogin) {
@@ -61,18 +88,34 @@ const LoginForm = () => {
         console.log(data);
         authCtx.login(data.idToken);
         // localStorage.setItem("token", data.idToken);
-        router.push('/home');
+        router.push("/home");
       })
       .catch((error) => alert(error.message));
+
+      // resetEmailInput();
+      // resetPasswordInput();
+
   };
 
   return (
     <section className={classes.auth}>
       <h1>{isLogin ? "Login" : "Sign Up"}</h1>
       <form onSubmit={formSubmitHandler}>
-        <div className={classes.control}>
+        <div className={emailInputHasError ? classes.invalid : classes.control}>
           <label htmlFor="email">Your Email</label>
-          <input type="email" id="email" required ref={emailInputRef} />
+          <input
+            type="email"
+            id="email"
+            required
+            ref={emailInputRef}
+            onChange={emailChangeHandler}
+            onBlur={emailBlurHandler}
+          />
+          {emailInputHasError && (
+            <p className={classes.errorText}>
+              <b>Invalid Email...</b>
+            </p>
+          )}
         </div>
         <div className={classes.control}>
           <label htmlFor="password">Your Password</label>
@@ -81,7 +124,19 @@ const LoginForm = () => {
             id="password"
             required
             ref={passwordInputRef}
+            onChange={passwordChangeHandler}
+            onBlur={passwordBlurHandler}
           />
+          {passwordInputHasError && isLogin &&  (
+            <p className={classes.errorText}>
+              <b>Invalid Password..!!</b>
+            </p>
+          )}
+           {passwordInputHasError && !isLogin  && (
+            <p className={classes.errorText}>
+              <b>Password should be 6 character long!!</b>
+            </p>
+          )}
         </div>
         <div className={classes.actions}>
           <button>{isLogin ? "Login" : "Create Account"}</button>
