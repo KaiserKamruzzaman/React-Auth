@@ -1,4 +1,4 @@
-import { useRef, useContext } from "react";
+import { useRef, useContext, useState } from "react";
 import classes from "./ProfileForm.module.css";
 import AuthContext from "../../store/auth-context";
 
@@ -8,14 +8,32 @@ import AuthContext from "../../store/auth-context";
 // }
 
 const ProfileForm = () => {
+  const [enteredPassword, setEnteredPassword] = useState("");
+  const [enteredPasswordIsTouch, setEnteredPasswordIsTouch] = useState(false);
+  const enteredPasswordIsValid =
+    enteredPassword.trim() !== "" && enteredPassword.length >= 7;
+  const passwordInputInvalid =
+    !enteredPasswordIsValid && enteredPasswordIsTouch;
+  console.log(enteredPasswordIsValid);
 
   const passwordInputRef = useRef();
   const authCtx = useContext(AuthContext);
+
+  const passwordChangeHandler = (event) => {
+    setEnteredPassword(event.target.value);
+  };
+
+  const passInputBlurHandler = () => {
+    setEnteredPasswordIsTouch(true);
+  };
 
   const submitFormHandler = (event) => {
     event.preventDefault();
     const enteredNewPass = passwordInputRef.current.value;
     //validation
+    if (!enteredPasswordIsValid) {
+      return;
+    }
 
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyBT04MUIPhtUNDySJT6t9sUntwJHI2LJzE",
@@ -45,21 +63,28 @@ const ProfileForm = () => {
         }
       })
       .then((data) => {
-        alert('password change successfully!!!');
+        alert("password change successfully!!!");
       })
       .catch((error) => alert(error.message));
   };
 
+  // const passwordInputClasses = passwordInputInvalid ? ''
+
   return (
     <form className={classes.form} onSubmit={submitFormHandler}>
-      <div className={classes.control}>
-        <label htmlFor="new-password">New Password</label>
+      <div className={passwordInputInvalid ? classes.invalid : classes.control}>
+        <label htmlFor="new-password">Enter Your New Password</label>
         <input
           type="password"
           id="new-password"
           ref={passwordInputRef}
-          minLength="1"
+          minLength="6"
+          onBlur={passInputBlurHandler}
+          onChange={passwordChangeHandler}
         />
+        {passwordInputInvalid && (
+          <p className={classes.errorText}><b>Invalid Password...</b></p>
+        )}
       </div>
       <div className={classes.action}>
         <button>Change Password</button>

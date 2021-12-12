@@ -16,7 +16,6 @@ function MainNavigation() {
 
   const logoutHandler = () => {
     authCtx.logout();
-    // localStorage.removeItem("token");
     router.push("/");
   };
 
