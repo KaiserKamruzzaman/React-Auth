@@ -1,28 +1,22 @@
 import classes from "./MainNavigation.module.css";
 import Link from "next/Link";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import {  useContext } from "react";
+import AuthContext from "../../store/auth-context";
 
-// let item;
-// if (typeof window !== 'undefined') {
-//   item = localStorage.getItem('token');
-// }
+
 
 function MainNavigation() {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const authCtx = useContext(AuthContext);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const item = localStorage.getItem("token");
-      if (item) {
-        setIsLoggedIn(true);
-      }
-    }
-  }, []);
+  const isLoggedIn = authCtx.isLoggedIn;
+  console.log(isLoggedIn);
+
 
   const logoutHandler = () => {
-    localStorage.removeItem("token");
+    authCtx.logout();
+    // localStorage.removeItem("token");
     router.push("/");
   };
 

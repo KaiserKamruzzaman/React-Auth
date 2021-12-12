@@ -1,10 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import classes from "./LoginForm.module.css";
 import { useRouter } from "next/router";
+import AuthContext from "../../store/auth-context";
 // import { useSelector, useDispatch } from "react-redux";
 
 const LoginForm = () => {
 
+  const authCtx = useContext(AuthContext);
   const router = useRouter();
   const [isLogin, setIsLogin] = useState(true);
   const emailInputRef = useRef();
@@ -57,7 +59,8 @@ const LoginForm = () => {
       })
       .then((data) => {
         console.log(data);
-        localStorage.setItem("token", data.idToken);
+        authCtx.login(data.idToken);
+        // localStorage.setItem("token", data.idToken);
         router.push('/home');
       })
       .catch((error) => alert(error.message));

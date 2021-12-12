@@ -1,13 +1,16 @@
-import { useRef } from "react";
+import { useRef, useContext } from "react";
 import classes from "./ProfileForm.module.css";
+import AuthContext from "../../store/auth-context";
 
-let token = "";
-if (typeof window !== "undefined") {
-  token = localStorage.getItem("token");
-}
+// let token = "";
+// if (typeof window !== "undefined") {
+//   token = localStorage.getItem("token");
+// }
 
 const ProfileForm = () => {
+
   const passwordInputRef = useRef();
+  const authCtx = useContext(AuthContext);
 
   const submitFormHandler = (event) => {
     event.preventDefault();
@@ -19,7 +22,7 @@ const ProfileForm = () => {
       {
         method: "POST",
         body: JSON.stringify({
-          idToken: token,
+          idToken: authCtx.token,
           password: enteredNewPass,
           returnSecureToken: false,
         }),
