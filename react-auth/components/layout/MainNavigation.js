@@ -11,7 +11,7 @@ function MainNavigation() {
   const authCtx = useContext(AuthContext);
 
   const isLoggedIn = authCtx.isLoggedIn;
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
 
 
   const logoutHandler = () => {
